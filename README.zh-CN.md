@@ -12,11 +12,7 @@ Unfold 是一个 TypeScript 库，用来构建这样的交互。
 - **在页面之间记住进度。** 每次打车都是一个 Task。它记录展示过哪些报价，以及用户选了哪一个。
 - **让 AI Agent 调用你的应用。** Agent 可以通过模型上下文协议（MCP）调用已有的页面和任务，也可以在内容生成时逐块更新页面。
 
-## 试跑打车示例
-
-示例使用固定报价和模拟生成器，所有代码都在你的电脑上运行。
-
-### 1. 启动服务
+## 快速开始
 
 打开终端。你需要 [Git](https://git-scm.com/install/) 下载代码，以及 [Node.js 22 或更新版本](https://nodejs.org/en/download) 运行项目。Node.js 自带的 `npm` 会安装项目所需的依赖。下面的命令可以在 macOS 终端、Linux 终端或 Windows 的 Git Bash 中运行。
 
@@ -24,6 +20,31 @@ Unfold 是一个 TypeScript 库，用来构建这样的交互。
 git clone https://github.com/yodaos-project/unfold.git
 cd unfold
 npm ci
+```
+
+### Hello Ink
+
+先试一个只有一个页面和一条路由的例子。在 `unfold` 文件夹里运行下面的命令。
+
+```sh
+npm run demo:hello
+```
+
+保持这个终端打开，再从另一个终端用 `curl` 请求 Ink 页面。
+
+```sh
+curl -H 'Accept: text/ink' http://127.0.0.1:9001/hello/Ada
+```
+
+你会看到 `<page><view><text>Hello, Ada!</text></view></page>`。把地址里的 `Ada` 换成别的名字，就能收到新的问候语。Hono 路由从地址中读取名字，再交给 Unfold。页面显示的内容写在 `HelloPage.render()` 里。[Hello Ink 源码](examples/hello.tsx)
+
+## 试跑打车示例
+
+示例使用固定报价和模拟生成器，所有代码都在你的电脑上运行。
+
+### 1. 启动服务
+
+```sh
 npm run demo
 ```
 
@@ -107,64 +128,6 @@ curl -f http://127.0.0.1:9000/rides/ride_123/preview \
 ```
 
 </details>
-
-## 写出第一个页面
-
-用编辑器打开项目，创建 `examples/hello.tsx`。下面的例子用 Hono 接收请求，再让 Unfold 渲染页面。路由就是应用接收请求的地址。这里的 `/hello/:name` 会把地址末尾的名字交给页面。
-
-```tsx
-/** @jsxImportSource @yodaos-pkg/unfold */
-import { serve } from '@hono/node-server';
-import { Hono } from 'hono';
-import {
-  createUnfold,
-  InkPage,
-  Text,
-  View,
-  type InkPageContext,
-} from '@yodaos-pkg/unfold';
-
-@InkPage()
-class HelloPage {
-  async *render({ input }: InkPageContext<{ name: string }>) {
-    yield (
-      <View>
-        <Text>Hello, {input.name}!</Text>
-      </View>
-    );
-  }
-}
-
-const unfold = createUnfold({
-  authenticate: () => 'local-demo',
-  views: { hello: HelloPage },
-});
-
-const app = new Hono();
-
-app.get('/hello/:name', (c) =>
-  unfold.respond(c.req.raw, () => ({
-    page: unfold.page(HelloPage, { name: c.req.param('name') }),
-  })),
-);
-
-serve({ fetch: app.fetch, hostname: '127.0.0.1', port: 9001 });
-```
-
-在终端中运行这个例子。
-
-```sh
-npm run build
-npm exec -- tsx examples/hello.tsx
-```
-
-保持这个终端打开，再从另一个终端请求页面。
-
-```sh
-curl -H 'Accept: text/ink' http://127.0.0.1:9001/hello/Ada
-```
-
-你会看到 `<page><view><text>Hello, Ada!</text></view></page>`。可以把地址里的 `Ada` 改成别的名字，也可以修改 `<Text>` 里的文案。页面布局写在 `render()` 里，第一次 `yield` 把页面交给 Unfold 返回。
 
 ## 打车示例是怎么工作的
 

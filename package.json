@@ -24,6 +24,7 @@
     "typecheck": "tsc",
     "test": "npm run build && npm run typecheck && tsx --test test/*.test.ts",
     "demo": "npm run build && tsx examples/ride/server.ts",
+    "demo:hello": "npm run build && tsx examples/hello.tsx",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "demo:mcp": "tsx examples/ride/agent.ts",

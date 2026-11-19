@@ -12,11 +12,7 @@ Unfold is a TypeScript library for building that kind of experience.
 - **Carry progress across screens.** A Task remembers which options you showed and what the user chose.
 - **Connect an AI agent.** The Model Context Protocol (MCP) gives agents a standard way to call your pages and tasks. An agent can also generate small updates for a page as content becomes ready.
 
-## Try the ride demo
-
-The demo uses sample fares and a simulated generator. Everything runs on your computer.
-
-### 1. Start the server
+## Get started
 
 Open a terminal. You’ll need [Git](https://git-scm.com/install/) to download the code and [Node.js 22 or newer](https://nodejs.org/en/download) to run it. Node.js includes `npm`, which installs the project’s dependencies. The shell commands below work in macOS Terminal, a Linux shell, or Git Bash on Windows.
 
@@ -24,6 +20,31 @@ Open a terminal. You’ll need [Git](https://git-scm.com/install/) to download t
 git clone https://github.com/yodaos-project/unfold.git
 cd unfold
 npm ci
+```
+
+### Hello Ink
+
+Start with a single page and one route. Run the example from the `unfold` folder.
+
+```sh
+npm run demo:hello
+```
+
+Keep that terminal open. In another terminal, use `curl` to ask the server for an Ink page.
+
+```sh
+curl -H 'Accept: text/ink' http://127.0.0.1:9001/hello/Ada
+```
+
+You should see `<page><view><text>Hello, Ada!</text></view></page>`. Change `Ada` in the address to try a different name. The Hono route reads the name from the address and passes it to Unfold. `HelloPage.render()` describes what the page displays. [Hello Ink source](examples/hello.tsx)
+
+## Try the ride demo
+
+The demo uses sample fares and a simulated generator. Everything runs on your computer.
+
+### 1. Start the server
+
+```sh
 npm run demo
 ```
 
@@ -107,64 +128,6 @@ curl -f http://127.0.0.1:9000/rides/ride_123/preview \
 ```
 
 </details>
-
-## Write your first page
-
-Open the project in your editor and create `examples/hello.tsx`. This example uses Hono to listen for a request and hands the page rendering to Unfold. A route is the address where your app handles a request. Here it’s `/hello/:name`, where `:name` captures the name at the end of the address.
-
-```tsx
-/** @jsxImportSource @yodaos-pkg/unfold */
-import { serve } from '@hono/node-server';
-import { Hono } from 'hono';
-import {
-  createUnfold,
-  InkPage,
-  Text,
-  View,
-  type InkPageContext,
-} from '@yodaos-pkg/unfold';
-
-@InkPage()
-class HelloPage {
-  async *render({ input }: InkPageContext<{ name: string }>) {
-    yield (
-      <View>
-        <Text>Hello, {input.name}!</Text>
-      </View>
-    );
-  }
-}
-
-const unfold = createUnfold({
-  authenticate: () => 'local-demo',
-  views: { hello: HelloPage },
-});
-
-const app = new Hono();
-
-app.get('/hello/:name', (c) =>
-  unfold.respond(c.req.raw, () => ({
-    page: unfold.page(HelloPage, { name: c.req.param('name') }),
-  })),
-);
-
-serve({ fetch: app.fetch, hostname: '127.0.0.1', port: 9001 });
-```
-
-Run the sample in a terminal.
-
-```sh
-npm run build
-npm exec -- tsx examples/hello.tsx
-```
-
-Leave that terminal open and request the page from another terminal.
-
-```sh
-curl -H 'Accept: text/ink' http://127.0.0.1:9001/hello/Ada
-```
-
-You should see `<page><view><text>Hello, Ada!</text></view></page>`. Try changing `Ada` in the address or editing the text inside `<Text>`. The `render()` method describes the screen, and its first `yield` gives Unfold the page to send.
 
 ## How the ride example works
 
