@@ -168,12 +168,12 @@ You should see `<page><view><text>Hello, Ada!</text></view></page>`. Try changin
 
 ## How the ride example works
 
-| Piece           | What it does                                                               | Example                                                |
-| --------------- | -------------------------------------------------------------------------- | ------------------------------------------------------ |
-| **Page**        | Describes one screen and the data it needs.                                | [Fare list and order review](examples/ride/pages.tsx)  |
-| **Task**        | Decides which page to show, where to wait for input, and where to go next. | [The ride’s steps and branches](examples/ride/task.ts) |
-| **HTTP routes** | Let your app start a ride, submit a selection, or request a preview.       | [The demo routes](examples/ride/app.ts)                |
-| **MCP**         | Gives an AI agent a standard way to discover and call those capabilities.  | [The demo agent](examples/ride/agent.ts)               |
+| Piece           | What it does                                                               | Example                                                                                                    |
+| --------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Page**        | Describes one screen and the data it needs.                                | [Fare list](examples/ride/pages/ride-options.tsx) and [order review](examples/ride/pages/order-review.tsx) |
+| **Task**        | Decides which page to show, where to wait for input, and where to go next. | [The ride’s steps and branches](examples/ride/task.ts)                                                     |
+| **HTTP routes** | Let your app start a ride, submit a selection, or request a preview.       | [The demo routes](examples/ride/app.ts)                                                                    |
+| **MCP**         | Gives an AI agent a standard way to discover and call those capabilities.  | [The demo agent](examples/ride/agent.ts)                                                                   |
 
 In the ride Task’s `main()` method, read the steps from top to bottom. Unfold loads the fares, shows the options page, and waits for the user. Selecting a fare opens the review page. If the fares expire, `stay()` refreshes the list and waits for another selection.
 

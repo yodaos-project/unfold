@@ -9,7 +9,8 @@ import {
   type TaskStartContext,
 } from '@yodaos-pkg/unfold';
 import type { Offer, RideOptions, RideReview } from './model.js';
-import { OrderReviewPage, RideOptionsPage } from './pages.js';
+import { OrderReviewPage } from './pages/order-review.js';
+import { RideOptionsPage } from './pages/ride-options.js';
 import { getQuotes, readDestination, readOfferOrdinal } from './services.js';
 
 @Task()

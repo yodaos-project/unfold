@@ -6,7 +6,8 @@ import {
   type TaskPage,
   type TaskStore,
 } from '@yodaos-pkg/unfold';
-import { OrderReviewPage, RideOptionsPage } from './pages.js';
+import { OrderReviewPage } from './pages/order-review.js';
+import { RideOptionsPage } from './pages/ride-options.js';
 import { loadRidePreview } from './services.js';
 import { RideTask } from './task.js';
 
